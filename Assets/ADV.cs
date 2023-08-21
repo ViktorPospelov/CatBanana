@@ -13,6 +13,7 @@ public class ADV : MonoBehaviour
     private Coroutine advCoroutine;
     private Coroutine advRew;
     private int nadoeda = 2;
+
     void Start()
     {
         advCoroutine = StartCoroutine(AdvMove());
@@ -22,28 +23,33 @@ public class ADV : MonoBehaviour
     private IEnumerator AdvRew()
     {
         yield return new WaitForSeconds(330f);
+
         while (!mainM.activeSelf)
         {
             yield return new WaitForSeconds(1f);
         }
-        YandexGame.ReviewShow(true);
+
+        if (YandexGame.EnvironmentData.reviewCanShow) YandexGame.ReviewShow(false);
     }
 
     private IEnumerator AdvMove()
     {
-        YandexGame.ReviewShow(true);
         obj.SetActive(false);
-        yield return new WaitForSeconds(Random.Range(100*nadoeda,120*nadoeda)*1f);
+        string adv = YandexGame.EnvironmentData.language == "ru" ? "Реклама" : "Advertising";
+        
+        yield return new WaitForSeconds(Random.Range(100 * nadoeda, 120 * nadoeda) * 1f);
+        
         obj.SetActive(true);
         int i = 5;
-        text.text = $"Реклама: {i}";
+        text.text = $"{adv}: {i}"; 
+        
         while (i != 0)
         {
             yield return new WaitForSeconds(1f);
             i--;
-            text.text = $"Реклама: {i}"; 
+            text.text = $"{adv}: {i}";
         }
-        
+
         YandexGame.FullscreenShow();
         obj.SetActive(false);
         nadoeda = 1;

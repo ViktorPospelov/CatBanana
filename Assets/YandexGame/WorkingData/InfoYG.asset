@@ -36,7 +36,7 @@ MonoBehaviour:
   languages:
     ru: 1
     en: 1
-    tr: 1
+    tr: 0
     az: 0
     be: 0
     he: 0
@@ -118,10 +118,10 @@ MonoBehaviour:
     it: 
     de: 
     hi: 
-  debug: 1
+  debug: 0
   archivingBuild: 1
   bakcgroundImage: 2
   pixelRatioEnable: 0
   pixelRatioValue: 1
   SDKStartDelay: 0
-  staticRBTInGame: 0
+  staticRBTInGame: 1
