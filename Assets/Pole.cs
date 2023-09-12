@@ -13,6 +13,7 @@ public class Pole : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cheiHod;
     [SerializeField] private TextMeshProUGUI winer;
     [SerializeField] private Transform brick;
+    [SerializeField] private cat _cat;
 
     private List<Transform> bricks;
 
@@ -25,6 +26,32 @@ public class Pole : MonoBehaviour
     private static bool LangRu = true;
 
     private void Start()
+    {
+        NormalStart();
+        
+        int saveGame = _onBot ? 2:1;
+        int saveLeght = PlayerPrefs.GetInt($"{saveGame}SaveLeght", 0);
+        if (saveLeght != 0)
+        {
+            SetBricks();
+            foreach (var br in bricks)
+            {
+                br.transform.position = new Vector3(1000, 100, 0);
+            }
+            for (int i = 0; i < saveLeght; i++)
+            {
+                var br = bricks[i];
+               br.position = new Vector3(PlayerPrefs.GetFloat($"{saveGame}posX{i}"),PlayerPrefs.GetFloat($"{saveGame}posY{i}"));
+               br.rotation = Quaternion.Euler(0,0,PlayerPrefs.GetFloat($"{saveGame}rotationZ{i}"));
+            }
+            _cat.gameObject.transform.position = new Vector3(PlayerPrefs.GetFloat($"{saveGame}posXCat"),PlayerPrefs.GetFloat($"{saveGame}posYCat"));
+            _cat.gameObject.transform.rotation = Quaternion.Euler(0,0,PlayerPrefs.GetFloat($"{saveGame}rotationZCat"));
+
+        }
+    }
+    
+
+    private void NormalStart()
     {
         Hod = hod.player1;
         ClikMove += SetClikMove;
@@ -39,6 +66,19 @@ public class Pole : MonoBehaviour
     {
         block.SetActive(true);
         winObj.SetActive(true);
+        int saveGame = _onBot ? 2:1;
+        for (int i = 0; i < 100; i++)
+        {
+            PlayerPrefs.DeleteKey($"{saveGame}posX{i}");
+            PlayerPrefs.DeleteKey($"{saveGame}posY{i}");
+            PlayerPrefs.DeleteKey($"{saveGame}rotationZ{i}");
+        }
+        PlayerPrefs.SetInt($"{saveGame}SaveLeght", 0);
+        
+        PlayerPrefs.DeleteKey($"{saveGame}posXCat");
+        PlayerPrefs.DeleteKey($"{saveGame}posYCat");
+        PlayerPrefs.DeleteKey($"{saveGame}rotationZCat");
+
     }
 
     private void SetClikMove()
@@ -78,6 +118,7 @@ public class Pole : MonoBehaviour
     {
         if (!winObj.activeSelf)
         {
+            SProgress();
             cheiHod.text = LangRu ? "ждите" : "wait";
             cheiHod.color = Color.black;
             yield return new WaitForSeconds(1.5f);
@@ -104,7 +145,6 @@ public class Pole : MonoBehaviour
                         SetBricks();
                         StartCoroutine(BotMove());
                     }
-
                     break;
             }
 
@@ -124,6 +164,28 @@ public class Pole : MonoBehaviour
     {
         ClikMove -= SetClikMove;
         GameControler.EndGame -= NewGame;
+    }
+
+    private void SProgress()
+    {
+        SetBricks();
+        var type = _onBot ? 2:1;
+        PlayerPrefs.SetInt($"{type}SaveLeght", bricks.Count);
+
+        for (int i = 0; i < bricks.Count; i++)
+        {
+            SaveProgressBrick(i, bricks[i].gameObject.transform.position.x, bricks[i].gameObject.transform.position.y, bricks[i].gameObject.transform.rotation.z);
+        }
+        PlayerPrefs.SetFloat($"{type}posXCat",_cat.gameObject.transform.position.x);
+        PlayerPrefs.SetFloat($"{type}posYCat",_cat.gameObject.transform.position.y);
+        PlayerPrefs.SetFloat($"{type}rotationZCat",_cat.gameObject.transform.rotation.z);
+    }
+    private void SaveProgressBrick(int indexBrick, float posX,float posY,float rotationZ)
+    {
+        var type = _onBot ? 2:1;
+        PlayerPrefs.SetFloat($"{type}posX{indexBrick}",posX);
+        PlayerPrefs.SetFloat($"{type}posY{indexBrick}",posY);
+        PlayerPrefs.SetFloat($"{type}rotationZ{indexBrick}",rotationZ);
     }
 
     enum hod
