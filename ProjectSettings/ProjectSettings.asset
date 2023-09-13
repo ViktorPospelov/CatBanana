@@ -714,6 +714,7 @@ PlayerSettings:
   webGLDecompressionFallback: 1
   scriptingDefineSymbols:
     Standalone: YG_PLUGIN_YANDEX_GAME
+    WebGL: YG_PLUGIN_YANDEX_GAME
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
